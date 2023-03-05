@@ -3,7 +3,7 @@ import { useCallback, useEffect, useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
 import { NavLink, useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
-import { setSession } from "../lib/session";
+import { findSession, setSession } from "../lib/session";
 import { singIn, usernameExist } from "../services/users";
 import { clsx } from 'clsx';
 
@@ -16,6 +16,12 @@ export default function Register() {
   const navigate = useNavigate();
 
   document.title = "Sign Up";
+
+  useEffect(() => {
+    if(findSession()){
+      navigate("/")
+    }
+  }, [])
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();

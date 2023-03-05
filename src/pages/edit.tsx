@@ -14,6 +14,10 @@ export default function Edit() {
   document.title = "Edit";
 
   useEffect(() => {
+    if(!findSession()){
+      navigate("/login")
+    }
+
     if (!post) {
       findById(postId!).then((post) => {
         setPost(post);
@@ -21,6 +25,7 @@ export default function Edit() {
     }
     if (post) {
       const session = findSession();
+      
       if (!session) {
         return navigate("/login");
       }
