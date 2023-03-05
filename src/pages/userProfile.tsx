@@ -40,7 +40,7 @@ export default function UserProfile() {
       <div className="flex justify-center pt-10">
         <div className="flex flex-col items-center">
           <img
-            src="../src/assets/anonymous-user.png"
+            src="/assets/anonymous-user.png"
             className="h-40 w-40 rounded-full bg-white"
           />
           <p className="mt-4">@{user?.username}</p>

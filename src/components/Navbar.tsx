@@ -32,7 +32,7 @@ export default function Navbar() {
           </button>
           <NavLink to={`/users/${findSession()?.username}`}>
             <img
-              src="../src/assets/anonymous-user.png"
+              src="/assets/anonymous-user.png"
               className="p-1 h-14 w-14 rounded-full"
             />
           </NavLink>
