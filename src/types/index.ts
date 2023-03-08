@@ -4,6 +4,8 @@ export interface User {
   username: string;
   createdAt?: string;
   updatedAt?: string;
+  userType?: string;
+  message?: string;
 }
 
 export interface Post {
@@ -15,6 +17,7 @@ export interface Post {
   updatedAt: string;
   UserId: string;
   User: User;
+  message?: string;
 }
 
 export type Posts = Post[];

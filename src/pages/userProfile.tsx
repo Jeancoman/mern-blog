@@ -1,9 +1,8 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import Feed from "../components/Feed";
 import Navbar from "../components/Navbar";
-import { findSession } from "../lib/session";
-import { findByUserId } from "../services/posts";
+import { findPostsByUsername } from "../services/posts";
 import { findByUsername } from "../services/users";
 import { Posts, User } from "../types";
 
@@ -11,24 +10,24 @@ export default function UserProfile() {
   const { username } = useParams();
   const [user, setUser] = useState<User | null>(null);
   const [posts, setPosts] = useState<Posts | null>(null);
+  const navigate = useNavigate();
 
   document.title = user?.username || "Loading...";
 
   useEffect(() => {
     if (!user) {
       findByUsername(username!).then((user) => {
+        if (user.message) {
+          return navigate("/404");
+        }
         setUser(user);
       });
     }
 
     if (!posts && user) {
-      findByUserId(user.id).then((posts) => {
-        if (posts) {
-          if (findSession()) {
-            if (findSession()?.id === posts[0].UserId) {
-              setPosts(posts)
-            }
-          } else setPosts(posts.filter((post) => post.status === "published"));
+      findPostsByUsername(user.username).then((posts) => {
+        if (posts.length > 0) {
+          setPosts(posts);
         }
       });
     }
@@ -43,7 +42,10 @@ export default function UserProfile() {
             src="/assets/anonymous-user.png"
             className="h-40 w-40 rounded-full bg-white"
           />
-          <p className="mt-4">@{user?.username}</p>
+          <p className="mt-4">
+            {user ? "@" : null}
+            {user?.username}
+          </p>
           <p className="text-3xl mt-8 font-bold">{user?.accountName}</p>
         </div>
       </div>

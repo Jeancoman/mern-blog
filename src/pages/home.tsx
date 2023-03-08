@@ -12,7 +12,9 @@ export default function Home() {
   useEffect(() => {
     if (!posts) {
       findAll().then((posts) => {
-        setPosts(posts);
+        if (posts.length > 0) {
+          setPosts(posts)
+        }
       });
     }
   }, []);

@@ -28,7 +28,7 @@ export default function Editor({ post }: Props) {
       setToUpdate(true);
     } else {
       setTitle("Your Insightful Post Title Goes Here");
-      setContent("# Hello, world!");
+      setContent("### Hello, world!");
     }
   }, [post]);
 

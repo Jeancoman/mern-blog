@@ -25,7 +25,7 @@ export default function Login() {
       setSession(auth.User);
       return navigate("/");
     } else {
-      toast.error(auth.message!);
+      toast.error("Invalid credentials");
     }
   };
 

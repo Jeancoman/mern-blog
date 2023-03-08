@@ -15,23 +15,23 @@ export default function Edit() {
 
   useEffect(() => {
     if(!findSession()){
-      navigate("/login")
+      return navigate("/login")
     }
 
     if (!post) {
       findById(postId!).then((post) => {
+        if(post.message){
+          return navigate("/404")
+        }
         setPost(post);
       });
     }
+
     if (post) {
       const session = findSession();
-      
-      if (!session) {
-        return navigate("/login");
-      }
 
-      if (post.UserId !== session.id) {
-        return navigate("/");
+      if (post.UserId !== session?.id && session?.userType === "user") {
+        return navigate("/404");
       }
     }
   }, [post]);

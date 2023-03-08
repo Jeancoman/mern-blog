@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import ReactMarkdown from "react-markdown";
-import { NavLink, useParams } from "react-router-dom";
+import { NavLink, useNavigate, useParams } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import { findById } from "../services/posts";
 import { Post } from "../types";
@@ -8,12 +8,16 @@ import { Post } from "../types";
 export default function PostContent() {
   const { postId } = useParams();
   const [post, setPost] = useState<Post | null>(null);
+  const navigate = useNavigate();
 
   document.title = post?.title || "Loading...";
 
   useEffect(() => {
     if (!post) {
       findById(postId!).then((post) => {
+        if(post.message){
+          return navigate("/404")
+        }
         setPost(post);
       });
     }

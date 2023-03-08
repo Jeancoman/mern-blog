@@ -21,25 +21,15 @@ function Preview({ post }: Preview) {
       className="bg-white rounded border shadow-sm border-slate-300 px-8 py-6"
     >
       <div className="flex flex-col gap-3">
-        {location.pathname === "/" ? (
-          <div>
-            By{" "}
-            <NavLink
-              to={`/users/${post?.User.username}`}
-              className="text-blue-600 font-bold"
-            >
-              {post?.User.accountName}
-            </NavLink>
-          </div>
-        ) : (
-          <div className="font-medium">By {post?.User.accountName}</div>
-        )}
+        <div className="font-medium">By {post?.User.accountName}</div>
         <div className="font-bold text-xl">{post?.title}</div>
         <div className="flex justify-between">
           <div>
             {wordCount} words. {minutesToRead} min read
           </div>
-          {findSession()?.id === post?.UserId && location.pathname !== "/" ? (
+          {(findSession()?.id === post?.UserId ||
+            findSession()?.userType === "admin") &&
+          location.pathname !== "/" ? (
             <div className="flex gap-4">
               {post?.status === "published" ? (
                 <div className="capitalize text-green-500 font-medium">
