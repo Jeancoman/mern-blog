@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import { NavLink, useNavigate, useParams } from "react-router-dom";
 import Navbar from "../components/Navbar";
-import { findById } from "../services/posts";
+import { PostService } from "../services/posts";
 import { Post } from "../types";
 
 export default function PostContent() {
@@ -14,8 +14,8 @@ export default function PostContent() {
 
   useEffect(() => {
     if (!post) {
-      findById(postId!).then((post) => {
-        if(post.message){
+      PostService.findById(postId!).then((post) => {
+        if(!post){
           return navigate("/404")
         }
         setPost(post);
@@ -28,16 +28,16 @@ export default function PostContent() {
       <Navbar />
       <main className="px-32 py-10">
         <div>
-          <div className="flex flex-1 flex-col bg-white gap-4 min-h-[70vh] p-10 shadow-sm rounded border border-slate-300">
+          <div className="flex flex-1 flex-col bg-white gap-4 min-h-[70vh] p-10 shadow-sm rounded-2xl border border-slate-300">
             {post ? (
               <>
                 <p>
                   Writen by{" "}
                   <NavLink
-                    to={`/users/${post?.User.username}`}
+                    to={`/users/${typeof post.user !== "string" ? post?.user.userName : null}`}
                     className="text-blue-600 font-bold"
                   >
-                    {post?.User.accountName}
+                    @{typeof post.user !== "string" ? post?.user.userName : null}
                   </NavLink>{" "}
                   on {post?.createdAt}
                 </p>

@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Editor from "../components/Editor";
 import Navbar from "../components/Navbar";
-import { findSession } from "../lib/session";
+import session from "../utils/session";
 
 export default function Create() {
   const navigate = useNavigate();
@@ -10,7 +10,7 @@ export default function Create() {
   document.title = "Create";
 
   useEffect(() => {
-    if(!findSession()){
+    if(session.find()){
       navigate("/login")
     }
   }, [])

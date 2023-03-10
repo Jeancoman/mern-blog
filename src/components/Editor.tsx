@@ -1,9 +1,8 @@
 import { useEffect, useState } from "react";
-import toast from "react-hot-toast";
 import ReactMarkdown from "react-markdown";
 import { useNavigate } from "react-router-dom";
-import { findSession } from "../lib/session";
-import { createPost, deletePost, updatePost } from "../services/posts";
+import session from "../utils/session";
+import { PostService } from "../services/posts";
 import { Post } from "../types";
 
 type Props = {
@@ -14,8 +13,7 @@ export default function Editor({ post }: Props) {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [preview, setPreview] = useState(false);
-  const [status, setStatus] = useState("unpublished");
-  const [isChecked, setIsChecked] = useState(false);
+  const [published, setPublished] = useState(false);
   const [toUpdate, setToUpdate] = useState(false);
   const navigate = useNavigate();
 
@@ -23,8 +21,7 @@ export default function Editor({ post }: Props) {
     if (post) {
       setTitle(post.title);
       setContent(post.content);
-      setStatus(post.status);
-      post.status === "published" ? setIsChecked(true) : setIsChecked(false);
+      setPublished(post.published);
       setToUpdate(true);
     } else {
       setTitle("Your Insightful Post Title Goes Here");
@@ -32,40 +29,35 @@ export default function Editor({ post }: Props) {
     }
   }, [post]);
 
-  useEffect(() => {
-    if (isChecked) {
-      setStatus("published");
-    } else {
-      setStatus("unpublished");
-    }
-  }, [isChecked]);
-
-  const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (toUpdate && post) {
-      updatePost(post.id, post.UserId, title, content, status).then((post) => {
-        toast.success("Post updated");
-        console.log(post);
-        return navigate(`/posts/${post[1][0].id}`);
-      });
+      const updated = await PostService.updatePost(
+        post._id,
+        title,
+        content,
+        published
+      );
+      navigate(`/posts/${updated[1][0]._id}`);
     } else {
-      if (findSession()) {
-        createPost(findSession()?.id!, title, content, status).then((post) => {
-          toast.success("Post created");
-          return navigate(`/posts/${post.id}`);
-        });
+      if (session.find()) {
+        const created = await PostService.createPost(
+          session.find()?.user._id!,
+          title,
+          content,
+          published
+        );
+        navigate(`/posts/${created._id}`);
       }
     }
   };
 
-  const deleteOnClick = () => {
+  const deleteOnClick = async () => {
     if (post) {
-      deletePost(post.id, findSession()?.id!).then((res) => {
-        if(res === 204){
-          toast.success("Post deleted");
-          return navigate(`/users/${findSession()?.username}`);
-        }
-      });
+      const deleted = await PostService.deletePost(post._id);
+      if (deleted === 204) {
+        return navigate(`/users/${session.find()?.user.userName}`);
+      }
     }
   };
 
@@ -131,8 +123,8 @@ export default function Editor({ post }: Props) {
               className="mr-2 h-4 w-4"
               type="checkbox"
               id="checkbox"
-              checked={isChecked}
-              onChange={() => setIsChecked((prev) => !prev)}
+              checked={published}
+              onChange={() => setPublished((prev) => !prev)}
             />
             <label htmlFor="checkbox">Published</label>
           </div>

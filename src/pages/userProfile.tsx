@@ -2,8 +2,8 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import Feed from "../components/Feed";
 import Navbar from "../components/Navbar";
-import { findPostsByUsername } from "../services/posts";
-import { findByUsername } from "../services/users";
+import { PostService } from "../services/posts";
+import { UserService } from "../services/users";
 import { Posts, User } from "../types";
 
 export default function UserProfile() {
@@ -12,12 +12,12 @@ export default function UserProfile() {
   const [posts, setPosts] = useState<Posts | null>(null);
   const navigate = useNavigate();
 
-  document.title = user?.username || "Loading...";
+  document.title = user?.userName || "Loading...";
 
   useEffect(() => {
     if (!user) {
-      findByUsername(username!).then((user) => {
-        if (user.message) {
+      UserService.findByUserName(username!).then((user) => {
+        if (!user) {
           return navigate("/404");
         }
         setUser(user);
@@ -25,10 +25,11 @@ export default function UserProfile() {
     }
 
     if (!posts && user) {
-      findPostsByUsername(user.username).then((posts) => {
+      PostService.findPostsByUserName(user.userName).then((posts) => {
         if (posts.length > 0) {
           setPosts(posts);
         }
+        console.log(posts)
       });
     }
   }, [user, posts]);
@@ -44,9 +45,9 @@ export default function UserProfile() {
           />
           <p className="mt-4">
             {user ? "@" : null}
-            {user?.username}
+            {user?.userName}
           </p>
-          <p className="text-3xl mt-8 font-bold">{user?.accountName}</p>
+          <p className="text-3xl mt-8 font-bold">{user?.displayName}</p>
         </div>
       </div>
       <Feed posts={posts} />

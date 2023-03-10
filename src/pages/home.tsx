@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import Feed from "../components/Feed";
 import Navbar from "../components/Navbar";
-import { findAll } from "../services/posts";
+import { PostService } from "../services/posts";
 import { Posts } from "../types";
 
 export default function Home() {
@@ -11,7 +11,7 @@ export default function Home() {
 
   useEffect(() => {
     if (!posts) {
-      findAll().then((posts) => {
+      PostService.findAll().then((posts) => {
         if (posts.length > 0) {
           setPosts(posts)
         }

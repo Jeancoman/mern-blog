@@ -2,8 +2,8 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import Editor from "../components/Editor";
 import Navbar from "../components/Navbar";
-import { findSession } from "../lib/session";
-import { findById } from "../services/posts";
+import session from "../utils/session";
+import { PostService } from "../services/posts";
 import { Post } from "../types";
 
 export default function Edit() {
@@ -14,13 +14,13 @@ export default function Edit() {
   document.title = "Edit";
 
   useEffect(() => {
-    if(!findSession()){
+    if(session.find()){
       return navigate("/login")
     }
 
     if (!post) {
-      findById(postId!).then((post) => {
-        if(post.message){
+      PostService.findById(postId!).then((post) => {
+        if(!post){
           return navigate("/404")
         }
         setPost(post);
@@ -28,9 +28,9 @@ export default function Edit() {
     }
 
     if (post) {
-      const session = findSession();
+      const user = session.find()?.user;
 
-      if (post.UserId !== session?.id && session?.userType === "user") {
+      if (post.user._id !== user?._id && user?.userType === "USER") {
         return navigate("/404");
       }
     }

@@ -1,23 +1,33 @@
 export interface User {
-  id: string;
-  accountName: string;
-  username: string;
+  _id: string;
+  displayName: string;
+  userName: string;
+  profileImageUrl?: string;
   createdAt?: string;
   updatedAt?: string;
   userType?: string;
-  message?: string;
 }
 
 export interface Post {
-  id: string;
+  _id: string;
   title: string;
   content: string;
-  status: string;
+  views: number;
+  published: boolean;
   createdAt: string;
   updatedAt: string;
-  UserId: string;
-  User: User;
-  message?: string;
+  user: string | User;
+}
+
+export interface JwtPayload {
+  user: User;
+  iat: number;
+  exp: number;
+}
+
+export interface Session {
+  user: User;
+  token: string;
 }
 
 export type Posts = Post[];

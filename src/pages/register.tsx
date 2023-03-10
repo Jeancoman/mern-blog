@@ -3,13 +3,14 @@ import { useCallback, useEffect, useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
 import { NavLink, useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
-import { findSession, setSession } from "../lib/session";
-import { singIn, usernameExist } from "../services/users";
+import session from "../utils/session";
+import { UserService } from "../services/users";
 import { clsx } from 'clsx';
+import { AuthService } from "../services/auth";
+import TokenDecoder from "../utils/tokenDecoder";
 
 export default function Register() {
   const [username, setUsername] = useState("");
-  const [accountName, setAccountName] = useState("");
   const [password, setPassword] = useState("");
   const [isInvalid, setIsInvalid] = useState(true);
   const [isTaken, setIsTaken] = useState(false);
@@ -18,16 +19,21 @@ export default function Register() {
   document.title = "Sign Up";
 
   useEffect(() => {
-    if(findSession()){
+    if(session.find()){
       navigate("/")
     }
   }, [])
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const user = await singIn(username, accountName, password);
-    if (user) {
-      setSession(user);
+    const token = await AuthService.singIn(username, password);
+    if (token) {
+      const user = TokenDecoder.decodeAndReturnUser(token);
+      const newSession = {
+        user,
+        token,
+      };
+      session.set(newSession);
       return navigate("/");
     } else {
       toast.error("Signin failure");
@@ -47,7 +53,7 @@ export default function Register() {
   const checkUsername = useCallback(
     debounce(async (username) => {
       if (username.length >= 3) {
-        const exist = await usernameExist(username);
+        const exist = await UserService.usernameExist(username);
         if(exist){
           setIsInvalid(true);
           setIsTaken(true);
@@ -78,13 +84,13 @@ export default function Register() {
   return (
     <div className="min-h-screen bg-slate-100">
       <Navbar />
-      <main className="flex place-content-center">
-        <div className="bg-white w-fit h-fit mt-[8%] rounded-lg shadow">
+      <main className="grid place-items-center h-[85.2vh]">
+        <div className="bg-white w-fit h-fit rounded-lg shadow">
           <form
             onSubmit={onSubmit}
             className="flex flex-col place-items-center gap-4 w-80 p-10 relative"
           >
-            <h1 className="self-start text-xl font-bold">Sign Up</h1>
+            <h1 className="self-start text-2xl font-bold">Sign Up</h1>
             <input
               type="text"
               placeholder="Enter your username"
@@ -98,15 +104,6 @@ export default function Register() {
                 ["w-full px-3 py-1.5 text-base font-normal text-green-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-green-700 focus:bg-white focus:border-green-600 focus:outline-none"]: !isTaken && !isInvalid,
               })
               }
-            />
-            <input
-              type="text"
-              placeholder="Enter your account name"
-              value={accountName}
-              onChange={(e) => setAccountName(e.target.value)}
-              required
-              minLength={1}
-              className="w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
             />
             <input
               type="password"
@@ -124,7 +121,7 @@ export default function Register() {
               Continue
             </button>
             <div className="flex gap-2">
-              <p>Already have an account?</p>
+              <p>Do you have an account?</p>
               <NavLink
                 to="/login"
                 className="text-blue-600 hover:text-blue-700 font-medium"

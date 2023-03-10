@@ -1,11 +1,11 @@
 import { NavLink, useNavigate } from "react-router-dom";
-import { findSession, revokeSession } from "../lib/session";
+import session from "../utils/session";
 
 export default function Navbar() {
   const navigate = useNavigate();
 
   const singOut = () => {
-    revokeSession();
+    session.revoke();
     return navigate("/");
   };
   return (
@@ -14,9 +14,9 @@ export default function Navbar() {
         to="/"
         className="bg-slate-800 text-white text-lg font-bold p-3 px-5 rounded"
       >
-        BLOG
+        MERN
       </NavLink>
-      {findSession() ? (
+      {session.find() ? (
         <div className="flex gap-4 items-center">
           <NavLink
             to="/create"
@@ -30,7 +30,7 @@ export default function Navbar() {
           >
             Sing out
           </button>
-          <NavLink to={`/users/${findSession()?.username}`}>
+          <NavLink to={`/users/${session.find()?.user.userName}`}>
             <img
               src="/assets/anonymous-user.png"
               className="p-1 h-14 w-14 rounded-full"

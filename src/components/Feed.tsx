@@ -1,5 +1,5 @@
 import { NavLink, useLocation } from "react-router-dom";
-import { findSession } from "../lib/session";
+import session from "../utils/session";
 import { Post, Posts } from "../types";
 
 type Preview = {
@@ -17,31 +17,31 @@ function Preview({ post }: Preview) {
 
   return (
     <NavLink
-      to={`/posts/${post?.id}`}
-      className="bg-white rounded border shadow-sm border-slate-300 px-8 py-6"
+      to={`/posts/${post?._id}`}
+      className="bg-white rounded-2xl border shadow-sm border-slate-300 px-8 py-6"
     >
       <div className="flex flex-col gap-3">
-        <div className="font-medium">By {post?.User.accountName}</div>
+        <div className="font-medium">By @{typeof post?.user !== "string" ? post?.user.userName : null}</div>
         <div className="font-bold text-xl">{post?.title}</div>
         <div className="flex justify-between">
           <div>
             {wordCount} words. {minutesToRead} min read
           </div>
-          {(findSession()?.id === post?.UserId ||
-            findSession()?.userType === "admin") &&
+          {(session.find()?.user._id === post?.user._id ||
+            session.find()?.user.userType === "ADMIN") &&
           location.pathname !== "/" ? (
             <div className="flex gap-4">
-              {post?.status === "published" ? (
+              {post?.published ? (
                 <div className="capitalize text-green-500 font-medium">
-                  {post?.status}
+                  {"Published"}
                 </div>
               ) : (
                 <div className="capitalize text-red-500 font-medium">
-                  {post?.status}
+                  {"Unpublished"}
                 </div>
               )}
               <NavLink
-                to={`/edit/${post?.id}`}
+                to={`/edit/${post?._id}`}
                 className="text-end font-bold text-blue-500 hover:text-blue-600 "
               >
                 Edit
@@ -59,12 +59,11 @@ export default function Feed({ posts }: Feed) {
   return (
     <main className="px-32 py-12 flex flex-col gap-4">
       {location.pathname === "/" ? (
-        <div className="bg-blue-600 text-white rounded border shadow-sm border-blue-300 px-8 py-6">
+        <div className="bg-blue-600 text-white rounded-2xl border shadow-sm border-blue-300 px-8 py-6">
           <div>
-            <h1 className="font-bold text-lg pb-2">MERN Blog Application</h1>
+            <h1 className="font-bold text-lg pb-2">MERN Microblogging Application</h1>
             <p className="font-medium pb-2">
-              Welcome! This is a simple blog application made using a variation
-              of the MERN stack.
+              Welcome! This is a simple microblogging application made using the MERN stack.
             </p>
             <p className="font-medium pb-2">
               {" "}
@@ -120,7 +119,7 @@ export default function Feed({ posts }: Feed) {
         </div>
       ) : null}
       {posts?.map((post) => {
-        return <Preview post={post} key={post.id} />;
+        return <Preview post={post} key={post._id} />;
       })}
     </main>
   );

@@ -1,4 +1,4 @@
-import { findSession } from "../lib/session";
+import session from "../utils/session";
 import { Post, Posts, UpdateRes } from "../types";
 
 const findAll = async () => {
@@ -6,16 +6,14 @@ const findAll = async () => {
   return (await response.json()) as Posts;
 };
 
-const findPostsByUsername = async (username: string) => {
-  if (findSession()) {
+const findPostsByUserName = async (username: string) => {
+  if (session.find()) {
     const response = await fetch(
       `${import.meta.env.VITE_BACKEND_URL}/api/users/${username}/posts`,
       {
         method: "GET",
-        //@ts-ignore
         headers: {
           "Content-Type": "application/json",
-          "X-Session-Id": findSession()?.id,
         },
       }
     );
@@ -37,24 +35,22 @@ const findById = async (id: string) => {
 
 const updatePost = async (
   id: string,
-  UserId: string,
   title: string,
   content: string,
-  status: string
+  published: boolean
 ) => {
-  if (findSession()?.userType === "admin") {
+  if (session.find()?.user.userType === "ADMIN") {
     const response = await fetch(
       `${import.meta.env.VITE_BACKEND_URL}/api/posts/${id}`,
       {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
-          "X-Session-Id": UserId,
         },
         body: JSON.stringify({
           title,
           content,
-          status,
+          published,
         }),
       }
     );
@@ -67,12 +63,11 @@ const updatePost = async (
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
-        "X-Session-Id": UserId,
       },
       body: JSON.stringify({
         title,
         content,
-        status,
+        published,
       }),
     }
   );
@@ -80,10 +75,10 @@ const updatePost = async (
 };
 
 const createPost = async (
-  UserId: string,
+  userId: string,
   title: string,
   content: string,
-  status: string
+  published: boolean
 ) => {
   const response = await fetch(
     `${import.meta.env.VITE_BACKEND_URL}/api/posts`,
@@ -95,23 +90,22 @@ const createPost = async (
       body: JSON.stringify({
         title,
         content,
-        status,
-        UserId,
+        published,
+        userId,
       }),
     }
   );
   return (await response.json()) as Post;
 };
 
-const deletePost = async (id: string, UserId: string) => {
-  if (findSession()?.userType === "user") {
+const deletePost = async (id: string) => {
+  if (session.find()?.user.userType === "USER") {
     const response = await fetch(
       `${import.meta.env.VITE_BACKEND_URL}/api/posts/${id}`,
       {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
-          "X-Session-Id": UserId,
         },
       }
     );
@@ -123,16 +117,15 @@ const deletePost = async (id: string, UserId: string) => {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
-        "X-Session-Id": UserId,
       },
     }
   );
   return response.status;
 };
 
-export {
+export const PostService = {
   findAll,
-  findPostsByUsername,
+  findPostsByUserName,
   findById,
   updatePost,
   createPost,
