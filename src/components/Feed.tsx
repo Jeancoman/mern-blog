@@ -146,10 +146,10 @@ export default function Feed({ posts }: Feed) {
         <div className="bg-blue-600 text-white rounded-2xl border shadow-sm border-blue-300 px-8 py-6">
           <div>
             <h1 className="font-bold text-lg pb-2">
-              MERN Microblogging Application
+              MERN Blogging Application
             </h1>
             <p className="font-medium pb-2">
-              Welcome! This is a simple microblogging application made using the
+              Welcome! This is a simple blogging application made using the
               MERN stack.
             </p>
             <p className="font-medium pb-2">
