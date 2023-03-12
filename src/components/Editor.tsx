@@ -38,17 +38,18 @@ export default function Editor({ post }: Props) {
         content,
         published
       );
-      navigate(`/posts/${updated[1][0]._id}`);
+      if(updated){
+        navigate(`/posts/${post._id}`);
+      }
     } else {
-      if (session.find()) {
         const created = await PostService.createPost(
-          session.find()?.user._id!,
           title,
           content,
           published
         );
-        navigate(`/posts/${created._id}`);
-      }
+        if(created){
+          navigate(`/posts/${created._id}`)
+        }
     }
   };
 

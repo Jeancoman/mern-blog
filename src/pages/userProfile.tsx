@@ -40,14 +40,14 @@ export default function UserProfile() {
       <div className="flex justify-center pt-10">
         <div className="flex flex-col items-center">
           <img
-            src="/assets/anonymous-user.png"
+            src={user?.profileImageUrl ? user.profileImageUrl : "/assets/anonymous-user.png"}
             className="h-40 w-40 rounded-full bg-white"
           />
           <p className="mt-4">
             {user ? "@" : null}
             {user?.userName}
           </p>
-          <p className="text-3xl mt-8 font-bold">{user?.displayName}</p>
+          <p className="text-3xl mt-6 font-bold">{user?.displayName}</p>
         </div>
       </div>
       <Feed posts={posts} />

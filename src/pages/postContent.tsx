@@ -1,3 +1,4 @@
+import { format } from "date-fns";
 import { useEffect, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import { NavLink, useNavigate, useParams } from "react-router-dom";
@@ -19,6 +20,7 @@ export default function PostContent() {
           return navigate("/404")
         }
         setPost(post);
+        PostService.incrementViews(post._id);
       });
     }
   }, []);
@@ -39,7 +41,7 @@ export default function PostContent() {
                   >
                     @{typeof post.user !== "string" ? post?.user.userName : null}
                   </NavLink>{" "}
-                  on {post?.createdAt}
+                  on {format(new Date(post?.createdAt), 'yyyy-MM-dd')}
                 </p>
                 <article className="prose w-max">
                   <h1 className="w-max">{post?.title}</h1>

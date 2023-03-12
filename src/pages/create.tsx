@@ -10,7 +10,7 @@ export default function Create() {
   document.title = "Create";
 
   useEffect(() => {
-    if(session.find()){
+    if(!session.find()){
       navigate("/login")
     }
   }, [])

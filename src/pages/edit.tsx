@@ -14,7 +14,7 @@ export default function Edit() {
   document.title = "Edit";
 
   useEffect(() => {
-    if(session.find()){
+    if(!session.find()){
       return navigate("/login")
     }
 

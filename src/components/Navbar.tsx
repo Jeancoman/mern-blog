@@ -1,11 +1,17 @@
-import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink, useLocation, useNavigate } from "react-router-dom";
+import cookie from "../utils/cookie";
 import session from "../utils/session";
 
 export default function Navbar() {
   const navigate = useNavigate();
+  const { pathname } = useLocation();
 
   const singOut = () => {
     session.revoke();
+    cookie.revoke("auth");
+    if (pathname === "/") {
+      return location.reload();
+    }
     return navigate("/");
   };
   return (
@@ -32,7 +38,11 @@ export default function Navbar() {
           </button>
           <NavLink to={`/users/${session.find()?.user.userName}`}>
             <img
-              src="/assets/anonymous-user.png"
+              src={
+                session.find()?.user?.profileImageUrl
+                  ? session.find()?.user.profileImageUrl
+                  : "/assets/anonymous-user.png"
+              }
               className="p-1 h-14 w-14 rounded-full"
             />
           </NavLink>

@@ -84,6 +84,7 @@ export default function Login() {
               <hr className="h-[0.12rem] bg-slate-500 flex-auto" />
             </div>
             <button
+              onClick={() => AuthService.singInWithGoogle()}
               type="button"
               className="flex place-items-center gap-4 w-full px-6 py-2.5 bg-red-600 text-white font-bold text-sm leading-tight rounded hover:bg-red-700 focus:bg-red-600 focus:outline-none focus:ring-0 active:bg-red-800"
             >

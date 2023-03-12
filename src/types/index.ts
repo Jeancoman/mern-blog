@@ -16,7 +16,7 @@ export interface Post {
   published: boolean;
   createdAt: string;
   updatedAt: string;
-  user: string | User;
+  user: User;
 }
 
 export interface JwtPayload {
@@ -29,6 +29,13 @@ export interface Session {
   user: User;
   token: string;
 }
+
+export interface Like {
+  any: string;
+  user: string;
+}
+
+export type Likes = Like[]
 
 export type Posts = Post[];
 

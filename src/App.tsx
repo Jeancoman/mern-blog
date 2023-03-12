@@ -7,6 +7,9 @@ import Login from "./pages/login";
 import PostContent from "./pages/postContent";
 import Register from "./pages/register";
 import UserProfile from "./pages/userProfile";
+import TimeAgo from "javascript-time-ago";
+import en from "javascript-time-ago/locale/en";
+TimeAgo.addDefaultLocale(en);
 
 export default function App() {
   return (
