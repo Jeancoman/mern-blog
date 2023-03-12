@@ -1,14 +1,15 @@
 import { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
 import Feed from "../components/Feed";
 import Navbar from "../components/Navbar";
 import { PostService } from "../services/posts";
 import { Posts } from "../types";
-import cookie from "../utils/cookie";
 import session from "../utils/session";
 import TokenDecoder from "../utils/tokenDecoder";
 
 export default function Home() {
   const [posts, setPosts] = useState<Posts | null>(null);
+  const location = useLocation();
 
   document.title = "Home";
 
@@ -21,7 +22,7 @@ export default function Home() {
       });
     }
     
-    const token = cookie.find("auth");
+    const token = TokenDecoder.findTokenInUrl(location.hash);
 
     if(token){
       const user = TokenDecoder.decodeAndReturnUser(token);
@@ -30,6 +31,7 @@ export default function Home() {
         token,
       };
       session.set(newSession);
+      window.history.replaceState({}, document.title, "/");
     }
   }, []);
 

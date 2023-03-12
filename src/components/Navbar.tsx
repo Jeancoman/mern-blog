@@ -1,17 +1,11 @@
-import { NavLink, useLocation, useNavigate } from "react-router-dom";
-import cookie from "../utils/cookie";
+import { NavLink, useNavigate } from "react-router-dom";
 import session from "../utils/session";
 
 export default function Navbar() {
   const navigate = useNavigate();
-  const { pathname } = useLocation();
 
   const singOut = () => {
     session.revoke();
-    cookie.revoke("auth");
-    if (pathname === "/") {
-      return location.reload();
-    }
     return navigate("/");
   };
   return (

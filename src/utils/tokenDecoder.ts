@@ -6,6 +6,12 @@ const decodeAndReturnUser = (token: string) => {
     return decoded.user;
 };
 
-const TokenDecoder = { decodeAndReturnUser };
+const findTokenInUrl = (url: string) => {
+    let cleaned = url.substring(1)
+    const token = new URLSearchParams(cleaned).get('auth_token');
+    return token;
+}
+
+const TokenDecoder = { decodeAndReturnUser, findTokenInUrl };
 
 export default TokenDecoder;
