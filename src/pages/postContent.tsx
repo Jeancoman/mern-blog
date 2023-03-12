@@ -29,11 +29,11 @@ export default function PostContent() {
     <div className="min-h-screen bg-slate-100">
       <Navbar />
       <main className="px-32 py-10">
-        <div>
-          <div className="flex flex-1 flex-col bg-white gap-4 min-h-[70vh] p-10 shadow-sm rounded-2xl border border-slate-300">
+        <div className="w-full">
+          <div className="flex flex-1 flex-col w-full bg-white gap-4 min-h-[70vh] p-10 shadow-sm rounded-2xl border border-slate-300">
             {post ? (
               <>
-                <p>
+                <p className="text-xs sm:text-base w-full">
                   Writen by{" "}
                   <NavLink
                     to={`/users/${typeof post.user !== "string" ? post?.user.userName : null}`}
@@ -43,8 +43,8 @@ export default function PostContent() {
                   </NavLink>{" "}
                   on {format(new Date(post?.createdAt), 'yyyy-MM-dd')}
                 </p>
-                <article className="prose w-max">
-                  <h1 className="w-max">{post?.title}</h1>
+                <article className="prose-sm sm:prose">
+                  <h1>{post?.title}</h1>
                   <ReactMarkdown children={post?.content} />
                 </article>
               </>
