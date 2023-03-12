@@ -57,7 +57,7 @@ export default function Editor({ post }: Props) {
     if (post) {
       const deleted = await PostService.deletePost(post._id);
       if (deleted === 204) {
-        return navigate(`/users/${session.find()?.user.userName}`);
+        return navigate(`/users/${post.user.userName}`);
       }
     }
   };

@@ -82,22 +82,22 @@ function Preview({ post }: Preview) {
               <div
                 className={clsx({
                   ["flex items-center	gap-1 py-1 px-3 rounded-2xl bg-red-200 hover:bg-red-300"]:
-                    !liked,
+                    !liked || !session.find(),
                   ["flex items-center	gap-1 py-1 px-3 rounded-2xl bg-red-400 hover:bg-red-500"]:
-                    liked,
+                    liked && session.find(),
                 })}
                 onClick={likeOrDislike}
               >
                 <Heart
                   className={clsx({
-                    ["h-5 w-5 fill-red-500"]: !liked,
-                    ["h-5 w-5 fill-red-700"]: liked,
+                    ["h-5 w-5 fill-red-500"]: !liked || !session.find(),
+                    ["h-5 w-5 fill-red-700"]: liked && session.find(),
                   })}
                 />
                 <div
                   className={clsx({
-                    ["font-medium text-red-500"]: !liked,
-                    ["font-medium text-red-700"]: liked,
+                    ["font-medium text-red-500"]: !liked || !session.find(),
+                    ["font-medium text-red-700"]: liked && session.find(),
                   })}
                 >
                   {likes}
